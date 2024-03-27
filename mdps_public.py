@@ -254,48 +254,37 @@ if (selected == 'Covid Prediction'):
     st.title("Covid Prediction using ML")
 
     file = st.file_uploader("X-ray file", type=["jpg", "jpeg" , "png"])
-    import cv2
-    import keras.utils as image
+    
     from PIL import Image , ImageOps
     import numpy as np
     def import_and_predict (image_data , covid_model ):
         size = (224,224)
-        image = ImageOps.fit(image_data ,size)
-        # image = cv2.resize((image_data),size)
-        img = np.reshape(image,[224,224,3])
-        img = np.asarray(img)
-        shape = img[np.newaxis,...]
-        prediction = covid_model(shape)
-
+        image = Image.open(image_data)
+        image = ImageOps.exif_transpose(image)  # Correct orientation for proper display
+        image = image.convert("RGB")
+        image = ImageOps.fit(image ,size)
+    
+        img = np.asarray(image)
+        img = img / 255.0  # Normalize pixel values to the range [0, 1]
+        img = img.reshape(1, 224, 224, 3)  # Reshape to match model input shape
+        prediction = covid_model.predict(img)
+        
         return prediction
 
     
     if file is None:
         st.text("PLEASE UPLOAD IMAGE")
     else:
-        image = Image.open(file)
+        image = file
         st.image(image,use_column_width=True)
         prediction = import_and_predict(image,covid_model)
     
         print(prediction)
-        if prediction==[1]:
+    
+        if prediction[0]>0.5:
             print('Prediction: Normal')
         else:
-          print('Prediction: Corona')
-    # from  keras.applications.vgg16 import preprocess_input
-
-    # image_ = Image.open(file)
-    # size = (224,224)
-    # img = ImageOps.fit(image_ ,size)   
-    
-    # x = image.img_to_array(img)
-    # x = np.expand_dims(x,axis=0)
-
-    # image_data = preprocess_input(x)
-    # classes = covid_model.predict(image_data)
-    # new_pred = np.argmax(classes , axis=1 )
-
-    # print(new_pred)
+            print('Prediction: Corona')
 
 
 
