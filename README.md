@@ -39,6 +39,8 @@ streamlit run disease_prediction_app.py
 Access the application in your web browser and navigate to the desired disease prediction page.
 Enter the required input data and click the "Predict" button to obtain the prediction result.
 
+Covid model is not accurate currently working on that 
+
 Contributing
 Contributions to this project are welcome. You can contribute by:
 
